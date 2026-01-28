@@ -79,6 +79,13 @@ struct mce_event {
 	char		user_action[4096];
 	char		mc_location[256];
 	int		erst;
+
+	/* DRAM location fields */
+	int32_t		dram_channel;
+	int32_t		dram_rank;
+	int32_t		dram_bank;
+	int32_t		dram_row;
+	int32_t		dram_col;
 };
 
 struct mce_priv {

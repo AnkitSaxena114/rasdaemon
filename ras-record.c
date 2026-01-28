@@ -348,6 +348,16 @@ static const struct db_fields mce_record_fields[] = {
 		{ .name = "mcastatus_msg",	.type = "TEXT" },
 		{ .name = "user_action",		.type = "TEXT" },
 		{ .name = "mc_location",		.type = "TEXT" },
+
+		/* DRAM location fields */
+		{ .name = "dram_channel",	.type = "INTEGER" },
+		{ .name = "dram_rank",		.type = "INTEGER" },
+		{ .name = "dram_bank",		.type = "INTEGER" },
+		{ .name = "dram_row",		.type = "INTEGER" },
+		{ .name = "dram_col",		.type = "INTEGER" },
+
+		/* Error severity */
+		{ .name = "severity",		.type = "TEXT" },
 };
 
 static const struct db_table_descriptor mce_record_tab = {
@@ -391,6 +401,17 @@ int ras_store_mce_record(struct ras_events *ras, struct mce_event *ev)
 	sqlite3_bind_text(priv->stmt_mce_record, 23, ev->mcastatus_msg, -1, NULL);
 	sqlite3_bind_text(priv->stmt_mce_record, 24, ev->user_action, -1, NULL);
 	sqlite3_bind_text(priv->stmt_mce_record, 25, ev->mc_location, -1, NULL);
+
+	/* DRAM location fields */
+	sqlite3_bind_int   (priv->stmt_mce_record, 26, ev->dram_channel);
+	sqlite3_bind_int   (priv->stmt_mce_record, 27, ev->dram_rank);
+	sqlite3_bind_int   (priv->stmt_mce_record, 28, ev->dram_bank);
+	sqlite3_bind_int   (priv->stmt_mce_record, 29, ev->dram_row);
+	sqlite3_bind_int   (priv->stmt_mce_record, 30, ev->dram_col);
+
+	/* Error severity: extract UC bit (bit 61) from status to determine UE vs CE */
+	const char *severity = (ev->status & MCI_STATUS_UC) ? "UE" : "CE";
+	sqlite3_bind_text (priv->stmt_mce_record, 31, severity, -1, NULL);
 
 	rc = sqlite3_step(priv->stmt_mce_record);
 	if (rc != SQLITE_OK && rc != SQLITE_DONE)

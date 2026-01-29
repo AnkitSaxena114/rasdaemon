@@ -80,12 +80,12 @@ int ras_store_mc_event(struct ras_events *ras, struct ras_mc_event *ev)
 	rc = sqlite3_step(priv->stmt_mc_event);
 	if (rc != SQLITE_OK && rc != SQLITE_DONE)
 		log(TERM, LOG_ERR,
-			"Failed to do mc_event step on sqlite: error = %d\n", rc);
+		    "Failed to do mc_event step on sqlite: error = %d\n", rc);
 	rc = sqlite3_reset(priv->stmt_mc_event);
 	if (rc != SQLITE_OK && rc != SQLITE_DONE)
 		log(TERM, LOG_ERR,
-			"Failed reset mc_event on sqlite: error = %d\n",
-			rc);
+		    "Failed reset mc_event on sqlite: error = %d\n",
+		    rc);
 	log(TERM, LOG_INFO, "register inserted at db\n");
 
 	// Call failure mode analysis after each insert

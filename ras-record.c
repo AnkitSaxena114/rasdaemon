@@ -18,6 +18,7 @@
 #include "ras-mce-handler.h"
 #include "ras-mc-handler.h"
 #include "ras-record.h"
+#include "ras-policy.h"
 
 /*
  * BuildRequires: sqlite-devel
@@ -79,13 +80,17 @@ int ras_store_mc_event(struct ras_events *ras, struct ras_mc_event *ev)
 	rc = sqlite3_step(priv->stmt_mc_event);
 	if (rc != SQLITE_OK && rc != SQLITE_DONE)
 		log(TERM, LOG_ERR,
-		    "Failed to do mc_event step on sqlite: error = %d\n", rc);
+			"Failed to do mc_event step on sqlite: error = %d\n", rc);
 	rc = sqlite3_reset(priv->stmt_mc_event);
 	if (rc != SQLITE_OK && rc != SQLITE_DONE)
 		log(TERM, LOG_ERR,
-		    "Failed reset mc_event on sqlite: error = %d\n",
-		    rc);
+			"Failed reset mc_event on sqlite: error = %d\n",
+			rc);
 	log(TERM, LOG_INFO, "register inserted at db\n");
+
+	// Call failure mode analysis after each insert
+	// Use the default DB path as in ras-policy
+	analyze_failure_modes("/var/lib/rasdaemon/ras-mc_event.db");
 
 	return rc;
 }

@@ -1,8 +1,4 @@
-/* SPDX-License-Identifier: GPL-2.0-or-later */
-
 /*
- * Copyright (C) 2026 RAS Daemon Decision Agent
- * 
  * DRAM failure mode detection and analysis using SQLite database
  * Detects CW, Row, Column, and SWD failures
  */
@@ -11,7 +7,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+
 #include <sqlite3.h>
+#include "ras-policy.h"
 
 /**
  * parse_iso8601_to_seconds - Convert ISO 8601 timestamp to seconds since epoch

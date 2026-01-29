@@ -14,18 +14,6 @@
 #include <sqlite3.h>
 
 /**
- * struct dimm_key - Composite key for DIMM/Bank grouping
- * @channel: DRAM channel number
- * @rank:    DRAM rank number
- * @bank:    DRAM bank number
- */
-struct dimm_key {
-	int32_t channel;
-	int32_t rank;
-	int32_t bank;
-};
-
-/**
  * parse_iso8601_to_seconds - Convert ISO 8601 timestamp to seconds since epoch
  * 
  * Simplified parser for timestamps in format: "YYYY-MM-DD HH:MM:SS"

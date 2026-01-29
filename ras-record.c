@@ -409,9 +409,8 @@ int ras_store_mce_record(struct ras_events *ras, struct mce_event *ev)
 	sqlite3_bind_int   (priv->stmt_mce_record, 29, ev->dram_row);
 	sqlite3_bind_int   (priv->stmt_mce_record, 30, ev->dram_col);
 
-	/* Error severity: extract UC bit (bit 61) from status to determine UE vs CE */
-	const char *severity = (ev->status & MCI_STATUS_UC) ? "UE" : "CE";
-	sqlite3_bind_text (priv->stmt_mce_record, 31, severity, -1, NULL);
+	/* Error severity */
+	sqlite3_bind_text (priv->stmt_mce_record, 31, ev->severity, -1, NULL);
 
 	rc = sqlite3_step(priv->stmt_mce_record);
 	if (rc != SQLITE_OK && rc != SQLITE_DONE)

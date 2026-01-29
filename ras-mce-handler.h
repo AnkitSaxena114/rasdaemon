@@ -86,6 +86,9 @@ struct mce_event {
 	int32_t		dram_bank;
 	int32_t		dram_row;
 	int32_t		dram_col;
+
+	/* Error severity */
+	char		severity[8];
 };
 
 struct mce_priv {

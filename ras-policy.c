@@ -265,7 +265,7 @@ static int check_column_failure(sqlite3 *db)
 }
 
 /**
- * check_swd_failure - Detect SWD (Spatial/Sparse Word Disturb) failures
+ * check_swd_failure - Detect SWD failures
  * 
  * Rule: >= 3 errors across 2+ DISTINCT rows where (Row_Max - Row_Min) <= 8 
  *       for same Channel/Rank/Bank AND all errors within 1 hour time window

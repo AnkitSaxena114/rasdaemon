@@ -88,10 +88,6 @@ int ras_store_mc_event(struct ras_events *ras, struct ras_mc_event *ev)
 		    rc);
 	log(TERM, LOG_INFO, "register inserted at db\n");
 
-	// Call failure mode analysis after each insert
-	// Use the default DB path as in ras-policy
-	analyze_failure_modes("/var/lib/rasdaemon/ras-mc_event.db");
-
 	return rc;
 }
 
@@ -428,6 +424,10 @@ int ras_store_mce_record(struct ras_events *ras, struct mce_event *ev)
 		    rc);
 	log(TERM, LOG_INFO, "register inserted at db\n");
 
+	// Call failure mode analysis after each insert
+	// Use the default DB path as in ras-policy
+	analyze_failure_modes("/var/lib/rasdaemon/ras-mc_event.db");
+	
 	return rc;
 }
 #endif

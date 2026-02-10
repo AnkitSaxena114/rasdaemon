@@ -18,6 +18,7 @@
 #include "ras-mce-handler.h"
 #include "ras-mc-handler.h"
 #include "ras-record.h"
+#include "ras-policy.h"
 #include "ras-reri-handler.h"
 
 /*
@@ -349,6 +350,16 @@ static const struct db_fields mce_record_fields[] = {
 		{ .name = "mcastatus_msg",	.type = "TEXT" },
 		{ .name = "user_action",		.type = "TEXT" },
 		{ .name = "mc_location",		.type = "TEXT" },
+
+		/* DRAM location fields */
+		{ .name = "dram_channel",	.type = "INTEGER" },
+		{ .name = "dram_rank",		.type = "INTEGER" },
+		{ .name = "dram_bank",		.type = "INTEGER" },
+		{ .name = "dram_row",		.type = "INTEGER" },
+		{ .name = "dram_col",		.type = "INTEGER" },
+
+		/* Error severity */
+		{ .name = "severity",		.type = "TEXT" },
 };
 
 static const struct db_table_descriptor mce_record_tab = {
@@ -393,6 +404,16 @@ int ras_store_mce_record(struct ras_events *ras, struct mce_event *ev)
 	sqlite3_bind_text(priv->stmt_mce_record, 24, ev->user_action, -1, NULL);
 	sqlite3_bind_text(priv->stmt_mce_record, 25, ev->mc_location, -1, NULL);
 
+	/* DRAM location fields */
+	sqlite3_bind_int   (priv->stmt_mce_record, 26, ev->dram_channel);
+	sqlite3_bind_int   (priv->stmt_mce_record, 27, ev->dram_rank);
+	sqlite3_bind_int   (priv->stmt_mce_record, 28, ev->dram_bank);
+	sqlite3_bind_int   (priv->stmt_mce_record, 29, ev->dram_row);
+	sqlite3_bind_int   (priv->stmt_mce_record, 30, ev->dram_col);
+
+	/* Error severity */
+	sqlite3_bind_text (priv->stmt_mce_record, 31, ev->severity, -1, NULL);
+
 	rc = sqlite3_step(priv->stmt_mce_record);
 	if (rc != SQLITE_DONE)
 		log(TERM, LOG_ERR,
@@ -404,6 +425,10 @@ int ras_store_mce_record(struct ras_events *ras, struct mce_event *ev)
 		    rc);
 	log(TERM, LOG_INFO, "register inserted at db\n");
 
+	// Call failure mode analysis after each insert
+	// Use the same DB path as rasdaemon
+	analyze_failure_modes(SQLITE_RAS_DB);
+	
 	return rc;
 }
 #endif

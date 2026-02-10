@@ -182,6 +182,7 @@ endif
 
 if WITH_SQLITE3
    rasdaemon_SOURCES += ras-record.c
+   rasdaemon_SOURCES += ras-policy.c
 endif
 
 if WITH_YITIAN_NS_DECODE
